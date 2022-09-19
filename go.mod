@@ -1,4 +1,4 @@
-module github.com/razorpay/ifsc/v2
+module github.com/bharat-gadde-dev/ifsc/v2
 
 go 1.18
 
