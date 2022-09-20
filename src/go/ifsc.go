@@ -1,6 +1,7 @@
 package ifsc
 
 import (
+	"embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,6 +17,13 @@ var ifscMap map[string][]Data
 var bankNames map[string]string
 var sublet map[string]string
 var customSublets map[string]string
+
+//go:embed banks.json
+//go:embed banknames.json
+//go:embed IFSC.json
+//go:embed custom-sublets.json
+//go:embed sublet.json
+var embeddedFileStorage embed.FS
 
 type Data struct {
 	Value string
@@ -64,6 +72,13 @@ func init() {
 }
 
 func LoadFile(fileName string, result interface{}, fullDirPath string) error {
+
+	if bytes, err := embeddedFileStorage.ReadFile(fileName); err == nil {
+		if erro := json.Unmarshal(bytes, &result); erro != nil {
+			return erro
+		}
+		return nil
+	}
 	_, fileN, _, ok := runtime.Caller(0)
 	if !ok {
 		return errors.New("it was not possible to recover the information. Caller function error")
